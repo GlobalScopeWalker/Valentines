@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Valentine Page</title>
+  <style>
+    :root {
+      --landing-bg: #f8f8f8;
+      --valentine-bg: #ffd9e8;
+      --text-dark: #2f2f2f;
+      --primary: #e43f7f;
+      --yes: #ff4f8b;
+      --no: #bdbdbd;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+      min-height: 100vh;
+    }
+
+    .view {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.2rem;
+      transition: opacity 0.7s ease;
+    }
+
+    .landing {
+      background: var(--landing-bg);
+      opacity: 1;
+      z-index: 2;
+    }
+
+    .valentine {
+      background: var(--valentine-bg);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1;
+      position: relative;
+    }
+
+    .view.is-active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .view.is-hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    h1, h2 {
+      color: var(--text-dark);
+      text-align: center;
+      letter-spacing: 0.6px;
+      text-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-family: "Trebuchet MS", "Segoe Script", cursive;
+    }
+
+    h2 {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-family: "Brush Script MT", "Segoe Script", cursive;
+      z-index: 2;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .cta-btn {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 1rem;
+      z-index: 2;
+    }
+
+    .yes-btn {
+      background: var(--yes);
+      color: white;
+      min-width: 100px;
+    }
+
+    .no-btn {
+      background: var(--no);
+      color: #fff;
+      opacity: 0.75;
+      min-width: 100px;
+    }
+
+    .hearts {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .heart {
+      position: absolute;
+      bottom: -30px;
+      width: 18px;
+      height: 18px;
+      background: rgba(228, 63, 127, 0.6);
+      transform: rotate(45deg);
+      animation: floatUp linear infinite;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: inherit;
+    }
+
+    .heart::before {
+      top: -9px;
+      left: 0;
+    }
+
+    .heart::after {
+      left: -9px;
+      top: 0;
+    }
+
+    @keyframes floatUp {
+      from {
+        transform: translateY(0) rotate(45deg) scale(0.9);
+        opacity: 0;
+      }
+      20% {
+        opacity: 0.9;
+      }
+      to {
+        transform: translateY(-115vh) rotate(45deg) scale(1.1);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="view landing is-active" id="landingView">
+    <h1>Welcome Hater</h1>
+    <button class="cta-btn" id="startBtn">Click here</button>
+  </section>
+
+  <section class="view valentine" id="valentineView">
+    <div class="hearts" id="heartsContainer"></div>
+    <h2>Will you be my Valentine?</h2>
+    <div class="btn-row">
+      <button class="yes-btn" id="yesBtn">Yes</button>
+      <button class="no-btn" id="noBtn" aria-disabled="true">No</button>
+    </div>
+  </section>
+
+  <script>
+    const landingView = document.getElementById('landingView');
+    const valentineView = document.getElementById('valentineView');
+    const startBtn = document.getElementById('startBtn');
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const heartsContainer = document.getElementById('heartsContainer');
+
+    function createHearts(count = 24) {
+      for (let i = 0; i < count; i++) {
+        const heart = document.createElement('span');
+        heart.className = 'heart';
+        heart.style.left = `${Math.random() * 100}%`;
+        heart.style.animationDuration = `${6 + Math.random() * 6}s`;
+        heart.style.animationDelay = `${Math.random() * 6}s`;
+        heart.style.opacity = `${0.4 + Math.random() * 0.5}`;
+        heart.style.transform = `scale(${0.6 + Math.random() * 0.9}) rotate(45deg)`;
+        heartsContainer.appendChild(heart);
+      }
+    }
+
+    startBtn.addEventListener('click', () => {
+      landingView.classList.remove('is-active');
+      landingView.classList.add('is-hidden');
+
+      valentineView.classList.add('is-active');
+    });
+
+    yesBtn.addEventListener('click', () => {
+      alert('Yay! 💖');
+    });
+
+    noBtn.addEventListener('mouseenter', () => {
+      noBtn.style.opacity = '0';
+      noBtn.style.pointerEvents = 'none';
+    });
+
+    createHearts();
+  </script>
+</body>
+</html>
