@@ -6,18 +6,25 @@
   <title>Valentine Page</title>
   <style>
     :root {
-      --landing-bg: #f8f8f8;
-      --valentine-bg: #ffd9e8;
+      --landing-bg: #fff1f7;
+      --valentine-bg: #ffd3e5;
       --text-dark: #2f2f2f;
       --primary: #e43f7f;
       --yes: #ff4f8b;
       --no: #bdbdbd;
+      --heart-color: rgba(228, 63, 127, 0.58);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
     }
 
     body {
@@ -29,12 +36,16 @@
     .view {
       position: fixed;
       inset: 0;
+      width: 100vw;
+      height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      padding: 1.5rem;
       gap: 1.2rem;
       transition: opacity 0.7s ease;
+      overflow: hidden;
     }
 
     .landing {
@@ -61,11 +72,14 @@
       pointer-events: none;
     }
 
-    h1, h2 {
+    h1,
+    h2 {
       color: var(--text-dark);
       text-align: center;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.5px;
       text-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      z-index: 2;
+      max-width: 920px;
     }
 
     h1 {
@@ -74,9 +88,17 @@
     }
 
     h2 {
-      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-size: clamp(1.45rem, 2.9vw, 2.35rem);
+      line-height: 1.45;
       font-family: "Brush Script MT", "Segoe Script", cursive;
+      font-weight: 500;
+    }
+
+    .message {
+      max-width: 980px;
+      text-align: center;
       z-index: 2;
+      margin: 0 auto;
     }
 
     button {
@@ -87,6 +109,7 @@
       font-weight: 600;
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+      z-index: 2;
     }
 
     button:hover {
@@ -121,6 +144,8 @@
     .hearts {
       position: absolute;
       inset: 0;
+      width: 100%;
+      height: 100%;
       overflow: hidden;
       z-index: 0;
       pointer-events: none;
@@ -131,9 +156,10 @@
       bottom: -30px;
       width: 18px;
       height: 18px;
-      background: rgba(228, 63, 127, 0.6);
+      background: var(--heart-color);
       transform: rotate(45deg);
       animation: floatUp linear infinite;
+      will-change: transform, opacity;
     }
 
     .heart::before,
@@ -162,7 +188,7 @@
         opacity: 0;
       }
       20% {
-        opacity: 0.9;
+        opacity: 0.95;
       }
       to {
         transform: translateY(-115vh) rotate(45deg) scale(1.1);
@@ -173,13 +199,19 @@
 </head>
 <body>
   <section class="view landing is-active" id="landingView">
+    <div class="hearts" id="landingHearts"></div>
     <h1>Welcome Hater</h1>
     <button class="cta-btn" id="startBtn">Click here</button>
   </section>
 
   <section class="view valentine" id="valentineView">
-    <div class="hearts" id="heartsContainer"></div>
-    <h2>Will you be my Valentine?</h2>
+    <div class="hearts" id="valentineHearts"></div>
+    <div class="message">
+      <h2>
+        Dear Hater, this is our 4th Valentine's Day. We have shared many beautiful memories and had numerous fights (guilty me), but here we are, closer than ever.<br /><br />
+        Dear Sruji, will you be my Valentine?
+      </h2>
+    </div>
     <div class="btn-row">
       <button class="yes-btn" id="yesBtn">Yes</button>
       <button class="no-btn" id="noBtn" aria-disabled="true">No</button>
@@ -192,25 +224,25 @@
     const startBtn = document.getElementById('startBtn');
     const yesBtn = document.getElementById('yesBtn');
     const noBtn = document.getElementById('noBtn');
-    const heartsContainer = document.getElementById('heartsContainer');
+    const landingHearts = document.getElementById('landingHearts');
+    const valentineHearts = document.getElementById('valentineHearts');
 
-    function createHearts(count = 24) {
+    function createHearts(container, count = 28) {
       for (let i = 0; i < count; i++) {
         const heart = document.createElement('span');
         heart.className = 'heart';
         heart.style.left = `${Math.random() * 100}%`;
         heart.style.animationDuration = `${6 + Math.random() * 6}s`;
         heart.style.animationDelay = `${Math.random() * 6}s`;
-        heart.style.opacity = `${0.4 + Math.random() * 0.5}`;
-        heart.style.transform = `scale(${0.6 + Math.random() * 0.9}) rotate(45deg)`;
-        heartsContainer.appendChild(heart);
+        heart.style.opacity = `${0.35 + Math.random() * 0.5}`;
+        heart.style.transform = `scale(${0.55 + Math.random() * 0.95}) rotate(45deg)`;
+        container.appendChild(heart);
       }
     }
 
     startBtn.addEventListener('click', () => {
       landingView.classList.remove('is-active');
       landingView.classList.add('is-hidden');
-
       valentineView.classList.add('is-active');
     });
 
@@ -223,7 +255,8 @@
       noBtn.style.pointerEvents = 'none';
     });
 
-    createHearts();
+    createHearts(landingHearts, 24);
+    createHearts(valentineHearts, 32);
   </script>
 </body>
 </html>
