@@ -9,10 +9,13 @@
       --landing-bg: #fff1f7;
       --valentine-bg: #ffd3e5;
       --text-dark: #2f2f2f;
+      --title-color: #c2185b;
+      --message-color: #7a1f49;
       --primary: #e43f7f;
       --yes: #ff4f8b;
       --no: #bdbdbd;
       --heart-color: rgba(228, 63, 127, 0.58);
+      --panel-bg: rgba(255, 255, 255, 0.52);
     }
 
     * {
@@ -72,33 +75,57 @@
       pointer-events: none;
     }
 
-    h1,
-    h2 {
+    h1 {
       color: var(--text-dark);
       text-align: center;
       letter-spacing: 0.5px;
       text-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
       z-index: 2;
       max-width: 920px;
-    }
-
-    h1 {
       font-size: clamp(2rem, 5vw, 3.5rem);
       font-family: "Trebuchet MS", "Segoe Script", cursive;
     }
 
-    h2 {
-      font-size: clamp(1.45rem, 2.9vw, 2.35rem);
-      line-height: 1.45;
-      font-family: "Brush Script MT", "Segoe Script", cursive;
-      font-weight: 500;
+    .content-card {
+      max-width: 940px;
+      margin: 0 auto;
+      text-align: center;
+      z-index: 2;
+      background: var(--panel-bg);
+      backdrop-filter: blur(3px);
+      border-radius: 18px;
+      padding: 1.4rem 1.3rem;
+      box-shadow: 0 8px 24px rgba(122, 31, 73, 0.15);
+    }
+
+    .valentine-title {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      color: var(--title-color);
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      margin-bottom: 0.8rem;
+      animation: popFade 2.2s ease-in-out infinite;
+      text-shadow: 0 6px 18px rgba(194, 24, 91, 0.28);
     }
 
     .message {
-      max-width: 980px;
-      text-align: center;
-      z-index: 2;
-      margin: 0 auto;
+      font-size: clamp(1.05rem, 2.3vw, 1.5rem);
+      line-height: 1.55;
+      color: var(--message-color);
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    @keyframes popFade {
+      0%, 100% {
+        opacity: 0.35;
+        transform: scale(0.96);
+      }
+      45% {
+        opacity: 1;
+        transform: scale(1.05);
+      }
     }
 
     button {
@@ -195,28 +222,56 @@
         opacity: 0;
       }
     }
+
+    .celebration-banner {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%) translateY(120px);
+      width: min(92vw, 560px);
+      padding: 0.9rem 1rem;
+      background: #fff;
+      color: #8a1f52;
+      border-radius: 14px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      font-weight: 700;
+      font-size: clamp(0.9rem, 2.7vw, 1.1rem);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.35s ease, opacity 0.35s ease;
+      z-index: 9;
+    }
+
+    .celebration-banner.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
   <section class="view landing is-active" id="landingView">
     <div class="hearts" id="landingHearts"></div>
-    <h1>Welcome Hater</h1>
-    <button class="cta-btn" id="startBtn">Click here</button>
+    <h1>Welcome Hater!</h1>
+    <button class="cta-btn" id="startBtn">Let's Go</button>
   </section>
 
   <section class="view valentine" id="valentineView">
     <div class="hearts" id="valentineHearts"></div>
-    <div class="message">
-      <h2>
-        Dear Hater, this is our 4th Valentine's Day. We have shared many beautiful memories and had numerous fights (guilty me), but here we are, closer than ever.<br /><br />
+    <div class="content-card">
+      <div class="valentine-title">It&rsquo;s Valentine&rsquo;s Day!</div>
+      <p class="message">
+        Dear Hater, this is our 4th Valentine&rsquo;s Day. We have shared many beautiful memories and had numerous fights (guilty me), but here we are, closer than ever.<br /><br />
         Dear Sruji, will you be my Valentine?
-      </h2>
+      </p>
     </div>
     <div class="btn-row">
       <button class="yes-btn" id="yesBtn">Yes</button>
       <button class="no-btn" id="noBtn" aria-disabled="true">No</button>
     </div>
   </section>
+
+  <div class="celebration-banner" id="celebrationBanner" role="status" aria-live="polite"></div>
 
   <script>
     const landingView = document.getElementById('landingView');
@@ -226,6 +281,7 @@
     const noBtn = document.getElementById('noBtn');
     const landingHearts = document.getElementById('landingHearts');
     const valentineHearts = document.getElementById('valentineHearts');
+    const celebrationBanner = document.getElementById('celebrationBanner');
 
     function createHearts(container, count = 28) {
       for (let i = 0; i < count; i++) {
@@ -240,15 +296,21 @@
       }
     }
 
+    function showCelebrationMessage() {
+      celebrationBanner.textContent = 'Venkatesh says: "Yay! (❤) There is no going back."';
+      celebrationBanner.classList.add('show');
+      window.setTimeout(() => {
+        celebrationBanner.classList.remove('show');
+      }, 2800);
+    }
+
     startBtn.addEventListener('click', () => {
       landingView.classList.remove('is-active');
       landingView.classList.add('is-hidden');
       valentineView.classList.add('is-active');
     });
 
-    yesBtn.addEventListener('click', () => {
-      alert('Yay! 💖');
-    });
+    yesBtn.addEventListener('click', showCelebrationMessage);
 
     noBtn.addEventListener('mouseenter', () => {
       noBtn.style.opacity = '0';
